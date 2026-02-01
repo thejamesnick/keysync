@@ -3,9 +3,9 @@
 This roadmap focuses on building in public to generate trust and community.
 
 ## Phase 1: Foundation (Week 1)
-*   [ ] **Repo Setup:** Initialize public repo for CLI, backend, and docs.
-*   [ ] **Core Crypto:** Implement `age` encryption methods using SSH keys.
-*   [ ] **Basic CLI:** Build `signup`, `login` (mocked), and local `encrypt`/`decrypt`.
+*   [x] **Repo Setup:** Initialize public repo for CLI, backend, and docs.
+*   [x] **Core Crypto:** Implement `age` encryption methods using SSH keys.
+*   [x] **Basic CLI:** Build `signup`, `login` (mocked), and local `encrypt`/`decrypt`.
 *   [ ] **Updates:** Share first commit GIF and design philosophy.
 
 ## Phase 2: Project & Secrets (Week 2)
