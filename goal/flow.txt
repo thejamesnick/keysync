@@ -1,0 +1,91 @@
+# KeySync User Flows 🌊
+
+This document outlines the primary use cases and user journeys for KeySync, defining exactly what we are shipping.
+
+---
+
+## 🏗 Flow 1: The "Day 1" Setup (Project Owner)
+**Goal:** A new user sets up KeySync, creates a project, and secures their first secrets.
+
+1.  **Install & Signup**
+    *   User installs CLI: `brew install keysync` (or `go install`)
+    *   User runs: `keysync signup --email alice@startup.com`
+    *   **System Action:** Finds default SSH key (`~/.ssh/id_ed25519.pub`), sends challenge.
+    *   User signs challenge locally (auto-happens).
+    *   **Result:** Account created, verified by SSH key.
+
+2.  **Initialize Project**
+    *   User navigates to repo: `cd my-awesome-app`
+    *   User runs: `keysync init awesome-app`
+    *   **System Action:** keySync creates `.keysync/` config in the folder (git-tracked metadata).
+    *   **Result:** Project "awesome-app" is linked to Alice's account.
+
+3.  **Secure Secrets**
+    *   User has a local `.env` file with sensitive data.
+    *   User runs: `keysync push .env --env dev`
+    *   **System Action:**
+        *   Reads `.env`.
+        *   Encrypts it *specifically* for Alice's public key (using `age`).
+        *   Uploads the *encrypted blob* to the cloud.
+    *   **Result:** Secrets are backed up securely. Cloud has ZERO knowledge.
+
+---
+
+## 🤝 Flow 2: Onboarding a Teammate (Collaborator)
+**Goal:** Alice adds Bob to the project so he can access secrets.
+
+1.  **Alice Adds Bob**
+    *   Alice asks Bob for his public key (or fetches it if we implement a directory).
+    *   Alice runs: `keysync add-key --project awesome-app --env dev bob.pub`
+    *   **System Action:** Updates project metadata to allow Bob.
+    *   **Crucial Step:** Secrets must be re-encrypted for Bob.
+    *   Alice runs: `keysync push .env --env dev` (or `keysync rekey` if no changes)
+    *   **System Action:** Re-encrypts the *current* secret blob for Alice AND Bob.
+
+2.  **Bob Joins**
+    *   Bob installs KeySync.
+    *   **System Action on Install:** Checks `~/.ssh/` for existing keys. If none found, offers to generate `~/.ssh/id_ed25519` for him.
+    *   Bob sends his public key (`cat ~/.ssh/id_ed25519.pub`) to Alice (e.g., via Slack/email) or publishes it to his GitHub profile.
+    *   Bob runs: `keysync login` (if not already).
+    *   Bob runs: `keysync pull --env dev`
+    *   **System Action:**
+        *   Downloads the encrypted blob.
+        *   Checks if Bob's private key matches a recipient in the blob.
+        *   Decrypts content.
+        *   Writes to `.env` (or outputs to stdout).
+    *   **Result:** Bob has the secrets without Alice ever sending a password over Slack.
+
+---
+
+## 🔄 Flow 3: The "Oops" Moment (Revocation & Rotation)
+**Goal:** Bob leaves the company. Alice needs to secure the project.
+
+1.  ** revoke Access**
+    *   Alice runs: `keysync remove-key bob.pub --project awesome-app`
+    *   **System Action:** Updates project metadata. Bob is no longer a valid recipient for *future* pushes.
+
+2.  **Rotate Secrets (Critical)**
+    *   *Note: Bob still has the old `.env` file on his machine. We can't delete that.*
+    *   Alice changes the actual secrets (e.g., generates new AWS keys).
+    *   Alice updates her local `.env` with new values.
+    *   Alice runs: `keysync push .env --env dev`
+    *   **System Action:** Encrypts new values ONLY for Alice (and remaining team).
+    *   **Result:** Even if Bob kept the old blob, it's useless because the credentials changed. If he tries to pull the new blob, he can't decrypt it.
+
+---
+
+## 🌍 Flow 4: Deployment (CI/CD)
+**Goal:** The app needs secrets in production (e.g., Vercel, GitHub Actions).
+
+1.  **Generate Machine Key**
+    *   Alice generates a fresh SSH keypair for the CI server.
+    *   Alice adds the public key: `keysync add-key ci-server.pub --env prod`
+
+2.  **Push Prod Secrets**
+    *   Alice switches to prod secrets locally (or uses a specific file).
+    *   Alice runs: `keysync push .env.prod --env prod`
+
+3.  **CI Execution**
+    *   In the CI script, the private key is stored as a standard repository secret (e.g., `KEYSYNC_PRIVATE_KEY`).
+    *   CI script runs: `keysync pull --env prod --key "$KEYSYNC_PRIVATE_KEY"`
+    *   **Result:** Production secrets injected securely at runtime.

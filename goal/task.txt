@@ -1,0 +1,58 @@
+# KeySync Implementation Tasks 📝
+
+This is the step-by-step engineering checklist to get KeySync from zero to v1.0.
+
+## Phase 1: Local Foundation (MVP) 🏗️
+**Goal:** A simplified CLI that can encrypt/decrypt files locally using SSH keys. No server yet.
+
+*   [ ] **Project Scaffold:**
+    *   [ ] Initialize Go module `go mod init keysync` (Done).
+    *   [ ] Create `cmd/keysync/main.go` with basic Cobra/CLI framework.
+*   [ ] **Crypto Engine (`pkg/crypto`):**
+    *   [ ] Implement `FindSSHKeys()` to locate `~/.ssh/id_*.pub`.
+    *   [ ] Implement `Encrypt(data []byte, recipients []string) ([]byte, error)` using `age`.
+    *   [ ] Implement `Decrypt(data []byte, identityFile string) ([]byte, error)`.
+*   [ ] **Config Management:**
+    *   [ ] Define `.keysync/config.json` structure (ProjectID, Env mapping).
+    *   [ ] Implement `keysync init <name>` to generate this file.
+
+## Phase 2: Key Management Logic 🔑
+**Goal:** Manage who has access to the secrets.
+
+*   [ ] **Key Operations:**
+    *   [ ] Implement `keysync add-key <pubkey_path>`.
+    *   [ ] Validate key format (ensure it's a valid SSH public key).
+    *   [ ] Store authorized keys in `.keysync/keys.json` (or similar manifest).
+*   [ ] **Secret Handling:**
+    *   [ ] Implement `keysync push --local` (reads `.env`, encrypts for all keys in manifest, writes to `.keysync/secrets.enc`).
+    *   [ ] Implement `keysync pull --local` (reads `.keysync/secrets.enc`, decrypts with user's private key, prints/writes `.env`).
+
+## Phase 3: Remote Sync (The "Sync" Part) ☁️
+**Goal:** Exchange encrypted blobs via a server (Maxcloud/NX).
+
+*   [ ] **API Client (`pkg/api`):**
+    *   [ ] Define `Client` struct with base URL and HTTP methods.
+    *   [ ] Implement authentication challenge-response (Sign random nonce with SSH key).
+*   [ ] **Cloud Commands:**
+    *   [ ] Update `push` to upload the encrypted blob to the API.
+    *   [ ] Update `pull` to download from API before decrypting.
+*   [ ] **Onboarding:**
+    *   [ ] Implement `keysync signup` to register email + pubkey with server.
+
+## Phase 4: UX & "Build in Public" Polish 🎨
+**Goal:** Make it look cool and shareable.
+
+*   [ ] **Analytics (Metadata):**
+    *   [ ] Track local stats (pushes, pulls, team size).
+    *   [ ] Implement `keysync stats` with ASCII charts.
+*   [ ] **UI Polish:**
+    *   [ ] Add spinners/progress bars for network ops.
+    *   [ ] Use emojis for success/fail messages (🔐, ✅, ❌).
+
+## Phase 5: Future / Advanced (Post-Launch) 🚀
+**Status:** Out of scope for v1.
+
+*   [ ] **Web Dashboard:** visual admin panel.
+*   [ ] **Key Rotation:** Automated re-encryption wizard.
+*   [ ] **CI/CD Integrations:** GitHub Actions custom step.
+*   [ ] **Team/Org Management:** Groups of users (e.g., "developers", "admins").

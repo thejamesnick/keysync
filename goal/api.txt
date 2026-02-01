@@ -1,0 +1,53 @@
+# KeySync API & CLI Reference 📡
+
+## 1. CLI Commands
+
+### Authentication
+*   `keysync signup --email <email> --key <path>`: Register new account.
+*   `keysync login`: Authenticate via SSH challenge-response.
+
+### Project Management
+*   `keysync projects`: List all projects.
+*   `keysync init <name>`: Create new project in current dir.
+*   `keysync info <name>`: Show project metadata.
+
+### Key Management
+*   `keysync add-key <file>`: Authorize a new public key for current env.
+*   `keysync remove-key <fingerprint>`: Revoke access for a key.
+
+### Secrets Operations
+*   `keysync push [--env <name>]`: Encrypt local `.env` and upload.
+*   `keysync pull [--env <name>]`: Download and decrypt to local `.env`.
+*   `keysync rotate`: Re-encrypt secrets for valid keys (after revocation).
+
+### ℹ️ Command Mapping (vs Reference Book)
+We use simplified aliases for better DX:
+*   `keysync project create` -> `keysync init`
+*   `keysync project key add` -> `keysync add-key`
+*   `keysync secrets push` -> `keysync push`
+*   `keysync secrets pull` -> `keysync pull`
+
+### Analytics
+*   `keysync stats --project <name>`: Show project-level stats.
+*   `keysync stats --platform`: (Founder only) Show platform-wide stats.
+
+---
+
+## 2. API Endpoints (https://api.keysync.dev)
+
+### Auth
+*   `POST /auth/challenge`: Request login nonce.
+*   `POST /auth/verify`: Submit signed nonce for session token.
+
+### Projects
+*   `GET /projects`: List accounts projects.
+*   `POST /projects`: Create new project.
+*   `POST /projects/{id}/keys`: Add authorized key.
+*   `DELETE /projects/{id}/keys/{fp}`: Remove key.
+
+### Secrets (Blobs)
+*   `POST /secrets/push`: Upload encrypted binary blob (metadata + payload).
+*   `GET /secrets/pull`: Get latest blob for specific project/env.
+
+### Security Note
+The API **never** accepts or returns plaintext secrets. All payloads in `/secrets` endpoints are pre-encrypted client-side.

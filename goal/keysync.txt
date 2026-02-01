@@ -1,0 +1,96 @@
+# KeySync: The SSH-Native Secret Manager 🔐
+
+## 1. Project Overview
+**Name:** KeySync
+**Type:** Free Developer Tool / CLI Secret Manager
+**Tagline:** Sync your secrets securely, SSH-style. 🔐
+**Metric:** Zero Knowledge (Server never sees plaintext)
+
+KeySync is a free, developer-first tool designed for remote teams to manage environment variables and secrets securely. It uses **SSH keys as identity**, ensuring that only authorized team members can decrypt and access secrets. It supports local-first workflows, multi-environment scoping, and optional cloud synchronization, all while maintaining a strict zero-knowledge architecture.
+
+---
+
+## 2. Core Philosophy 🔐
+1.  **SSH is Identity:** No passwords. Authentication and access control are strictly tied to SSH keys.
+2.  **Zero-Knowledge:** The server (if used) only stores encrypted blobs. It cannot decrypt them.
+3.  **Local-First:** Encryption and decryption happen solely on the developer's machine.
+4.  **Boring is Better:** No complex dashboards or magic. Just keys, projects, and secrets.
+
+---
+
+## 3. Key Concepts & Architecture
+
+### Account & Identity
+*   **Identifier:** Email address (acts as the namespace).
+*   **Authentication:** Challenge-response mechanism using the user's private SSH key.
+*   **Role:** An account owns projects and manages the "admin" public keys.
+*   **Key Types:**
+    *   **Admin Keys:** associated with the Account/Owner. Can manage projects and keys.
+    *   **Developer Keys:** Authorized per-project. Can only pull/decrypt secrets.
+
+### Projects & Environments
+*   **Project:** A container for secrets (e.g., `web-api`, `frontend`).
+*   **Environment:** Logical namespaces within a project (e.g., `dev`, `staging`, `prod`).
+*   **Secrets:** Stored as encrypted binary blobs. Not individual key-values on the server.
+
+### Encryption Model
+*   **Algorithm:** `age` / Go crypto libraries.
+*   **Mechanism:** When pushing, secrets are encrypted *independently* for every authorized public key in that project/environment.
+*   **Result:** Any authorized developer can pull the blob and decrypt it with their own private key.
+
+---
+
+## 4. Core Workflow (CLI)
+
+### Authentication
+```bash
+keysync signup --email user@example.com --key ~/.ssh/id_ed25519.pub
+keysync login
+```
+
+### Project Setup
+```bash
+# owner
+keysync init my-project
+keysync add-key --project my-project --env dev bob.pub
+```
+
+### Managing Secrets
+```bash
+# owner
+keysync upload --project my-project --env dev .env
+
+# developer (bob)
+keysync pull --project my-project --env dev
+# Output: Decrypted .env content to stdout or file
+```
+
+### Revocation & Rotation
+```bash
+keysync remove-key bob.pub --project my-project
+keysync rotate --project my-project --env dev
+```
+
+---
+
+## 5. Technology Stack
+*   **CLI & Backend:** Go (Golang)
+    *   *Why?* Cross-platform binaries, native SSH support, high performance, strong concurrency.
+*   **Encryption:** `age` (or compatible Go crypto libs).
+*   **Local Storage:** SQLite / JSON.
+*   **Cloud Infrastructure:** **Railway** (Backing the Go server & Postgres database).
+
+---
+
+## 6. Analytics (Build-in-Public)
+KeySync tracks **usage metadata only** to share progress publicly without compromising privacy.
+*   **Metrics:** Number of accounts, projects, blobs pushed, active developers.
+*   **Privacy:** No secret values or sensitive data are ever logged.
+*   **Interface:** CLI-based stats (ASCIII charts/emojis) for both Platform Owner and Project Owners.
+
+---
+
+## 7. Future Roadmap
+*   Web dashboard for admin/audit logs (Next.js).
+*   Secret versioning and rollback.
+*   Web3-specific secret management (RPCs, Wallets).

@@ -1,0 +1,32 @@
+# KeySync Build Plan 🚀
+
+This roadmap focuses on building in public to generate trust and community.
+
+## Phase 1: Foundation (Week 1)
+*   [ ] **Repo Setup:** Initialize public repo for CLI, backend, and docs.
+*   [ ] **Core Crypto:** Implement `age` encryption methods using SSH keys.
+*   [ ] **Basic CLI:** Build `signup`, `login` (mocked), and local `encrypt`/`decrypt`.
+*   [ ] **Updates:** Share first commit GIF and design philosophy.
+
+## Phase 2: Project & Secrets (Week 2)
+*   [ ] **Project Flow:** Implement `init`, `add-key`, `remove-key`.
+*   [ ] **Secret Logic:** Build `.env` parsing, blob creation, and storage logic.
+*   [ ] **CLI Polish:** Add ASCII tables/charts for status output.
+*   [ ] **Updates:** Demo video of "Project Owner" flow.
+
+## Phase 3: Cloud Sync & Analytics (Week 3)
+*   [ ] **Remote Sync:** Connect CLI to Maxcloud/NX backend for `push`/`pull`.
+*   [ ] **Analytics:** Implement metadata-only event tracking (zero-knowledge).
+*   [ ] **Stats CMD:** Build `keysync stats` for visual metrics.
+*   [ ] **Updates:** Share "Founder Analytics" charts (emojis/bars).
+
+## Phase 4: Refinement (Week 4)
+*   [ ] **Onboarding:** Smooth out the `signup` -> `init` path.
+*   [ ] **Docs:** Finalize API reference and user guides.
+*   [ ] **Release:** First public beta release.
+
+## Build-in-Public Strategy
+1.  **Transparency:** Commit often, explain security choices.
+2.  **Visuals:** Use GIFs of terminal sessions for every update.
+3.  **Metrics:** Share platform growth stats (metadata only) to prove traction.
+4.  **Vibe:** Keep it fun, hacker-friendly, and simple.

@@ -1,0 +1,42 @@
+# KeySync Analytics Strategy 📊
+
+## Philosophy
+Track usage and adoption **without ever seeing secrets**.
+All analytics are derived from **metadata events**.
+
+## 1. Metrics Tracked (Zero-Knowledge)
+*   **Accounts:** Total registered users.
+*   **Projects:** Active project count.
+*   **Blobs:** Number of encrypted bundles pushed.
+*   **Activity:** Timestamps of pushes/pulls.
+*   **Team Size:** Number of authorized keys per project.
+
+**NOT Tracked:**
+*   Secret names or values.
+*   File contents.
+*   Environment variable specific data.
+
+## 2. CLI Implementation
+The CLI includes a `stats` command to visualize this data with fun ASCII art.
+
+### Founder View (`--platform`)
+```
+KeySync Platform Stats 🌍
+----------------------
+Accounts: 152  ██████████
+Projects:  47  ██████
+Blobs:    386  ███████████
+```
+
+### Project Owner View (`--project`)
+```
+Project: payments-api 🔐
+Team:    5 👥👥👥👥👥
+Envs:    3 🌱🌱🌱
+Pushes: 42 📦📦📦📦
+Last:    2s ago 🕒
+```
+
+## 3. Storage
+*   **Events Table:** `timestamp`, `event_type`, `account_id` (hashed), `project_id`.
+*   **Aggregates:** Daily/Weekly summaries to avoid storing massive event logs.

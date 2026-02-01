@@ -1,0 +1,26 @@
+# KeySync Tech Stack 🛠️
+
+## 1. Core Stack
+| Component | Technology | Justification |
+|-----------|-----------|---------------|
+| **CLI** | **Go (Golang)** | Cross-platform binaries (Win/Mac/Linux), strong SSH support, no runtime deps. |
+| **Encryption** | **age / Go crypto** | Modern, secure, simple. Supports recipient-based encryption (SSH keys). |
+| **Local Storage** | **SQLite / JSON** | Lightweight, file-based, offline-ready. |
+| **Server** | **Go + Railway** | Hosted on Railway. Zero-knowledge architecture. |
+
+## 2. Infrastructure
+*   **Backend Hosting:** **Railway** (Go Service).
+*   **Database:** **Postgres on Railway** (for accounts, project metadata, and analytics).
+*   **Blob Storage:** Encrypted blobs stored via Backend (backed by Railway Volume or S3-compatible store).
+*   **CI/CD:** GitHub Actions / Vercel for automated secret injection.
+
+## 3. Security Decisions 🔐
+*   **End-to-End Encryption:** Secrets are encrypted on the client *before* transmission.
+*   **Zero-Knowledge:** Server receives and stores only ciphertext.
+*   **Identity:** Relying on SSH keys involves no shared secrets or passwords.
+*   **Revocation:** Immediate key removal prevents future decryption (rotation required for past secrets).
+
+## 4. Why Go?
+*   **Performance:** Fast encryption/decryption of large env files.
+*   **Concurrency:** Efficient handling of multiple keys/recipients.
+*   **Distribution:** Single binary is easier for devs to install than Python/Node scripts.

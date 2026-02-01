@@ -1,2 +1,69 @@
-# keysync
-KeySync is a free, developer-first tool that allows remote teams to manage environment variables and secrets securely.
+# KeySync: The SSH-Native Secret Manager 🔐
+
+[![Build Status](https://img.shields.io/badge/build-passing-brightgreen)]()
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+> **Tagline:** Sync your secrets securely, SSH-style. 🔐
+
+KeySync is a free, developer-first tool designed for remote teams to manage environment variables and secrets securely. It uses **SSH keys as identity**, ensuring that only authorized team members can decrypt and access secrets. 
+
+**Zero Knowledge:** The server never sees plaintext secrets.
+**Local-First:** Encryption happens on your machine.
+
+---
+
+## 🛠 Project Status
+Current Phase: **Repo Setup & Architecture Plan**
+
+See detailed documentation in the [`goal/`](./goal) folder:
+*   [`goal/keysync.txt`](./goal/keysync.txt) - Core philosophy & overview
+*   [`goal/tech-stack.txt`](./goal/tech-stack.txt) - Go & age encryption stack
+*   [`goal/plan.txt`](./goal/plan.txt) - Build roadmap
+*   [`goal/api.txt`](./goal/api.txt) - CLI & API reference
+*   [`goal/analytics.txt`](./goal/analytics.txt) - Metadata-only analytics plan
+
+---
+
+## 🚀 Quick Start (Coming Soon)
+
+### Installation
+```bash
+go install github.com/keysync/cli/cmd/keysync@latest
+```
+
+### Usage
+```bash
+# 1. Signup with your SSH key
+keysync signup --email me@example.com --key ~/.ssh/id_ed25519.pub
+
+# 2. Create a project
+keysync init my-project
+
+# 3. Add a team member
+keysync add-key --project my-project bob.pub
+
+# 4. Push encrypted secrets
+keysync push .env
+```
+
+---
+
+## 🏗 Architecture
+
+### Account & Identity
+*   **Authentication:** Challenge-response via SSH keys. No passwords.
+*   **Access Control:** Per-project/environment authorization.
+
+### Encryption Model
+*   Uses **age** / Go crypto libraries.
+*   Secrets are encrypted *independently* for every authorized public key.
+*   Server stores only encrypted blobs.
+
+---
+
+## 🤝 Contributing
+KeySync is built in public. Check out our [Build Plan](./goal/plan.txt) to see what we're working on next.
+
+---
+
+MIT License © 2026 KeySync
