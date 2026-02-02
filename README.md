@@ -27,13 +27,15 @@ See detailed documentation in the [`goal/`](./goal) folder:
 ## 🚀 Quick Start (Coming Soon)
 
 ### Installation
+### Installation
+**One-line install (Mac & Linux):**
 ```bash
-# Clone the repo
-git clone https://github.com/keysync/cli.git
-cd cli
+curl -sL https://raw.githubusercontent.com/thejamesnick/keysync/main/install.sh | bash
+```
 
-# Install to /usr/local/bin
-make install
+Or install from source:
+```bash
+go install github.com/thejamesnick/keysync@latest
 ```
 
 ### Usage
