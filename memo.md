@@ -16,8 +16,9 @@ We have successfully completed **Phase 2** of the KeySync roadmap. The CLI is no
     *   ✅ `keysync pull`: Decrypts `.keysync/secrets.enc` -> `.env` using your identity.
 *   **UX / Design:**
     *   ✅ **Apple-style `status` command:** Clean, visual dashboard of project state.
-    *   ✅ **Simplified Help:** Hidden low-level `encrypt`/`decrypt` commands to focus on the workflow.
-    *   ✅ **Installation:** `make install` for easy global access.
+    *   ✅ **Ease of Use:** `keysync generate`, `whoami`, `signup --me`, `add-key github:user`.
+    *   ✅ **Installation:** Professional `install.sh` and GitHub Actions pipeline.
+    *   ✅ **Release:** Shipped v0.1.0 (Mac/Linux/Windows support).
 
 ## 3. Current Capabilities
 The tool works perfectly offline.
