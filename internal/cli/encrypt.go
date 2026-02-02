@@ -7,6 +7,8 @@ import (
 
 	"keysync/internal/crypto"
 
+	"keysync/internal/config"
+
 	"github.com/spf13/cobra"
 )
 
@@ -16,9 +18,10 @@ var (
 )
 
 var encryptCmd = &cobra.Command{
-	Use:   "encrypt [file]",
-	Short: "Encrypt a file for one or more SSH recipients",
-	Args:  cobra.ExactArgs(1),
+	Use:    "encrypt [file]",
+	Short:  "Encrypt a file for one or more SSH recipients (defaults to project keys)",
+	Hidden: true,
+	Args:   cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		inputFile := args[0]
 
@@ -29,24 +32,35 @@ var encryptCmd = &cobra.Command{
 		}
 
 		// Prepare recipients
-		// Check if recipients are files or raw keys
 		var finalRecipients []string
-		for _, r := range encryptRecipients {
-			if strings.HasPrefix(r, "ssh-") {
-				// Looks like a key
-				finalRecipients = append(finalRecipients, r)
-			} else {
-				// Assume it's a file path
-				keyBytes, err := os.ReadFile(r)
-				if err != nil {
-					return fmt.Errorf("failed to read recipient key file '%s': %w", r, err)
+
+		// 1. Check flags
+		if len(encryptRecipients) > 0 {
+			for _, r := range encryptRecipients {
+				if strings.HasPrefix(r, "ssh-") {
+					finalRecipients = append(finalRecipients, r)
+				} else {
+					keyBytes, err := os.ReadFile(r)
+					if err != nil {
+						return fmt.Errorf("failed to read recipient key file '%s': %w", r, err)
+					}
+					finalRecipients = append(finalRecipients, string(keyBytes))
 				}
-				finalRecipients = append(finalRecipients, string(keyBytes))
+			}
+		} else {
+			// 2. Fallback to project config
+			cwd, err := os.Getwd()
+			if err == nil {
+				proj, err := config.LoadProjectConfig(cwd)
+				if err == nil && proj != nil && len(proj.Keys) > 0 {
+					finalRecipients = append(finalRecipients, proj.Keys...)
+					fmt.Printf("🔒 Using %d keys from project '%s'\n", len(proj.Keys), proj.Name)
+				}
 			}
 		}
 
 		if len(finalRecipients) == 0 {
-			return fmt.Errorf("at least one recipient is required (--recipient)")
+			return fmt.Errorf("no recipients provided and no project keys found (--recipient is required if not in a project)")
 		}
 
 		// Encrypt

@@ -19,13 +19,13 @@ This is the step-by-step engineering checklist to get KeySync from zero to v1.0.
 ## Phase 2: Key Management Logic 🔑
 **Goal:** Manage who has access to the secrets.
 
-*   [ ] **Key Operations:**
-    *   [ ] Implement `keysync add-key <pubkey_path>`.
-    *   [ ] Validate key format (ensure it's a valid SSH public key).
-    *   [ ] Store authorized keys in `.keysync/keys.json` (or similar manifest).
-*   [ ] **Secret Handling:**
-    *   [ ] Implement `keysync push --local` (reads `.env`, encrypts for all keys in manifest, writes to `.keysync/secrets.enc`).
-    *   [ ] Implement `keysync pull --local` (reads `.keysync/secrets.enc`, decrypts with user's private key, prints/writes `.env`).
+*   [x] **Key Operations:**
+    *   [x] Implement `keysync add-key <pubkey_path>`.
+    *   [x] Validate key format (ensure it's a valid SSH public key).
+    *   [x] Store authorized keys in `.keysync/keys.json` (or similar manifest).
+*   [x] **Secret Handling:**
+    *   [x] Implement `keysync push --local` (reads `.env`, encrypts for all keys in manifest, writes to `.keysync/secrets.enc`).
+    *   [x] Implement `keysync pull --local` (reads `.keysync/secrets.enc`, decrypts with user's private key, prints/writes `.env`).
 
 ## Phase 3: Remote Sync (The "Sync" Part) ☁️
 **Goal:** Exchange encrypted blobs via a server (Maxcloud/NX).

@@ -16,9 +16,10 @@ var (
 )
 
 var decryptCmd = &cobra.Command{
-	Use:   "decrypt [file]",
-	Short: "Decrypt a file using an SSH identity",
-	Args:  cobra.ExactArgs(1),
+	Use:    "decrypt [file]",
+	Short:  "Decrypt a file using an SSH identity",
+	Hidden: true,
+	Args:   cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		inputFile := args[0]
 

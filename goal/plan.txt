@@ -9,9 +9,9 @@ This roadmap focuses on building in public to generate trust and community.
 *   [ ] **Updates:** Share first commit GIF and design philosophy.
 
 ## Phase 2: Project & Secrets (Week 2)
-*   [ ] **Project Flow:** Implement `init`, `add-key`, `remove-key`.
-*   [ ] **Secret Logic:** Build `.env` parsing, blob creation, and storage logic.
-*   [ ] **CLI Polish:** Add ASCII tables/charts for status output.
+*   [x] **Project Flow:** Implement `init`, `add-key`, `remove-key`.
+*   [x] **Secret Logic:** Build `.env` parsing, blob creation, and storage logic.
+*   [x] **CLI Polish:** Add `status` UI (Apple-style), hide generic encrypt/decrypt.
 *   [ ] **Updates:** Demo video of "Project Owner" flow.
 
 ## Phase 3: Cloud Sync & Analytics (Week 3)

@@ -69,8 +69,8 @@ var signupCmd = &cobra.Command{
 			return fmt.Errorf("failed to save config: %w", err)
 		}
 
-		fmt.Printf("✅ Account created locally for %s\n", signupEmail)
-		fmt.Printf("Identity: %s\n", identityFile)
+		fmt.Printf("  ✅  Account created for \033[1m%s\033[0m\n", signupEmail)
+		fmt.Printf("  🔑  Identity: %s\n", identityFile)
 		return nil
 	},
 }
@@ -87,7 +87,7 @@ var loginCmd = &cobra.Command{
 			return fmt.Errorf("no account found. Run 'keysync signup' first")
 		}
 
-		fmt.Printf("🔑 Logged in as %s\n", cfg.Email)
+		fmt.Printf("  ✨  Logged in as \033[1m%s\033[0m\n", cfg.Email)
 		// Future: server auth challenge
 		return nil
 	},

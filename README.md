@@ -28,7 +28,12 @@ See detailed documentation in the [`goal/`](./goal) folder:
 
 ### Installation
 ```bash
-go install github.com/keysync/cli/cmd/keysync@latest
+# Clone the repo
+git clone https://github.com/keysync/cli.git
+cd cli
+
+# Install to /usr/local/bin
+make install
 ```
 
 ### Usage
