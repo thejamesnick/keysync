@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"keysync/internal/config"
+	"keysync/internal/crypto"
 
 	"github.com/spf13/cobra"
 )
@@ -14,15 +15,42 @@ import (
 var (
 	signupEmail string
 	signupKey   string
+	signupMe    bool
 )
 
 var signupCmd = &cobra.Command{
-	Use:   "signup",
-	Short: "Create a new KeySync account (local config for now)",
+	Use:     "signup",
+	Short:   "Create a new KeySync account (local config for now)",
+	Example: "  keysync signup --email me@example.com --me\n  keysync signup --email me@example.com --key ~/.ssh/id_ed25519.pub",
 	RunE: func(cmd *cobra.Command, args []string) error {
+		// Handle --me flag logic
+		if signupMe {
+			keys, err := crypto.FindSSHKeys()
+			if err != nil {
+				return err
+			}
+			if len(keys) == 0 {
+				return fmt.Errorf("no keys found in ~/.ssh/. Generate one with 'keysync generate'")
+			}
+			// Use the first found key (usually id_ed25519.pub if sorted or standard)
+			// Ideally we prioritize id_ed25519.pub
+			var selectedKey string
+			for _, k := range keys {
+				if strings.Contains(k.Path, "id_ed25519.pub") {
+					selectedKey = k.Path
+					break
+				}
+			}
+			if selectedKey == "" {
+				selectedKey = keys[0].Path // Fallback to first
+			}
+			signupKey = selectedKey
+			fmt.Printf("  🔍  Found identity: \033[1m%s\033[0m\n", filepath.Base(signupKey))
+		}
+
 		// validate inputs
 		if signupEmail == "" || signupKey == "" {
-			return fmt.Errorf("email and key are required")
+			return fmt.Errorf("email and key (or --me) are required")
 		}
 
 		// expand home dir in key path if needed
@@ -70,7 +98,7 @@ var signupCmd = &cobra.Command{
 		}
 
 		fmt.Printf("  ✅  Account created for \033[1m%s\033[0m\n", signupEmail)
-		fmt.Printf("  🔑  Identity: %s\n", identityFile)
+		fmt.Printf("  🔑  Identity: %s.pub\n", identityFile)
 		return nil
 	},
 }
@@ -96,8 +124,9 @@ var loginCmd = &cobra.Command{
 func init() {
 	signupCmd.Flags().StringVar(&signupEmail, "email", "", "Your email address")
 	signupCmd.Flags().StringVar(&signupKey, "key", "", "Path to your SSH public key")
+	signupCmd.Flags().BoolVar(&signupMe, "me", false, "Use your local identity key automatically")
 	signupCmd.MarkFlagRequired("email")
-	signupCmd.MarkFlagRequired("key")
+	// signupCmd.MarkFlagRequired("key") // Removed so --me can replace it
 
 	rootCmd.AddCommand(signupCmd)
 	rootCmd.AddCommand(loginCmd)

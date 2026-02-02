@@ -18,9 +18,10 @@ var (
 )
 
 var pullCmd = &cobra.Command{
-	Use:   "pull",
-	Short: "Decrypt and update local secrets from the project",
-	Long:  `Reads the encrypted secrets blob, decrypts it using your identity, and writes to .env.`,
+	Use:     "pull",
+	Short:   "Decrypt and update local secrets from the project",
+	Example: "  keysync pull\n  keysync pull -o .env.local",
+	Long:    `Reads the encrypted secrets blob, decrypts it using your identity, and writes to .env.`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		cwd, err := os.Getwd()
 		if err != nil {

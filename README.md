@@ -38,17 +38,25 @@ make install
 
 ### Usage
 ```bash
-# 1. Signup with your SSH key
-keysync signup --email me@example.com --key ~/.ssh/id_ed25519.pub
+# 1. Setup your identity
+keysync generate --email me@example.com   # (If you don't have keys)
+keysync signup --email me@example.com --me # Auto-finds your key
 
 # 2. Create a project
-keysync init my-project
+keysync init
 
-# 3. Add a team member
-keysync add-key --project my-project bob.pub
+# 3. Add team members (Magic!)
+keysync add-key github:username           # Import from GitHub
+keysync add-key --me                      # Add yourself quickly
+keysync add-key bob.pub                   # Or use a file
 
 # 4. Push encrypted secrets
-keysync push .env
+keysync push   # Encrypts .env -> secrets.enc
+keysync pull   # Decrypts secrets.enc -> .env
+```
+**Find your own keys:**
+```bash
+keysync whoami
 ```
 
 ---

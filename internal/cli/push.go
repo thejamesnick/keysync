@@ -18,9 +18,10 @@ var (
 )
 
 var pushCmd = &cobra.Command{
-	Use:   "push",
-	Short: "Encrypt and sync local secrets to the project",
-	Long:  `Reads the local .env file, encrypts it for all authorized project keys, and saves the encrypted blob.`,
+	Use:     "push",
+	Short:   "Encrypt and sync local secrets to the project",
+	Example: "  keysync push\n  keysync push -f .env.production",
+	Long:    `Reads the local .env file, encrypts it for all authorized project keys, and saves the encrypted blob.`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		cwd, err := os.Getwd()
 		if err != nil {

@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"path/filepath"
+	"strings"
 
 	"filippo.io/age"
 	"filippo.io/age/agessh"
@@ -78,4 +80,42 @@ func Decrypt(encryptedData []byte, privateKeyPath string) ([]byte, error) {
 	}
 
 	return out.Bytes(), nil
+}
+
+// SSHKey represents a found public key
+type SSHKey struct {
+	Path    string
+	Content string
+}
+
+// FindSSHKeys looks for standard public keys in ~/.ssh
+func FindSSHKeys() ([]SSHKey, error) {
+	home, err := os.UserHomeDir()
+	if err != nil {
+		return nil, err
+	}
+
+	sshDir := filepath.Join(home, ".ssh")
+	files, err := os.ReadDir(sshDir)
+	if os.IsNotExist(err) {
+		return nil, nil
+	}
+	if err != nil {
+		return nil, err
+	}
+
+	var keys []SSHKey
+	for _, f := range files {
+		if !f.IsDir() && strings.HasSuffix(f.Name(), ".pub") {
+			path := filepath.Join(sshDir, f.Name())
+			content, err := os.ReadFile(path)
+			if err == nil {
+				keys = append(keys, SSHKey{
+					Path:    path,
+					Content: string(content),
+				})
+			}
+		}
+	}
+	return keys, nil
 }
