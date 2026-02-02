@@ -25,15 +25,15 @@ jobs:
         run: |
           mkdir -p dist
           # MacOS (Apple Silicon)
-          GOOS=darwin GOARCH=arm64 go build -o dist/keysync-darwin-arm64
+          GOOS=darwin GOARCH=arm64 go build -o dist/keysync-darwin-arm64 ./cmd/keysync
           # MacOS (Intel)
-          GOOS=darwin GOARCH=amd64 go build -o dist/keysync-darwin-amd64
+          GOOS=darwin GOARCH=amd64 go build -o dist/keysync-darwin-amd64 ./cmd/keysync
           # Linux (amd64)
-          GOOS=linux GOARCH=amd64 go build -o dist/keysync-linux-amd64
+          GOOS=linux GOARCH=amd64 go build -o dist/keysync-linux-amd64 ./cmd/keysync
           # Linux (arm64)
-          GOOS=linux GOARCH=arm64 go build -o dist/keysync-linux-arm64
+          GOOS=linux GOARCH=arm64 go build -o dist/keysync-linux-arm64 ./cmd/keysync
           # Windows (amd64)
-          GOOS=windows GOARCH=amd64 go build -o dist/keysync-windows-amd64.exe
+          GOOS=windows GOARCH=amd64 go build -o dist/keysync-windows-amd64.exe ./cmd/keysync
 
       - name: Create Release
         uses: softprops/action-gh-release@v1
