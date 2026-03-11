@@ -27,16 +27,69 @@ See detailed documentation in the [`goal/`](./goal) folder:
 ## 🚀 Quick Start (Coming Soon)
 
 ### Installation
-### Installation
 **One-line install (Mac & Linux):**
 ```bash
 curl -sL https://raw.githubusercontent.com/thejamesnick/keysync/main/install.sh | bash
 ```
 
-Or install from source:
+**One-line install (Windows, PowerShell):**
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -Command "irm https://raw.githubusercontent.com/thejamesnick/keysync/main/install.ps1 | iex"
+```
+
+**One-line install (Windows, PowerShell 7+):**
+```powershell
+pwsh -NoProfile -ExecutionPolicy Bypass -Command "irm https://raw.githubusercontent.com/thejamesnick/keysync/main/install.ps1 | iex"
+```
+
+**Install from source (Mac/Linux/Windows):**
 ```bash
 go install github.com/thejamesnick/keysync@latest
 ```
+
+**Build and run locally (Mac/Linux/Windows):**
+```bash
+go test ./...
+go run ./cmd/keysync --help
+```
+
+### Windows (PowerShell) setup
+
+**1) Install Go**
+
+Option A (recommended):
+```powershell
+winget install -e --id GoLang.Go
+```
+
+Then restart your terminal and verify:
+```powershell
+go version
+```
+
+**2) Get KeySync**
+```powershell
+git clone https://github.com/thejamesnick/keysync.git
+cd .\keysync
+```
+
+**3) Build/test locally**
+```powershell
+go test ./...
+go run .\cmd\keysync --help
+```
+
+**4) SSH keys on Windows**
+- Default SSH folder: `C:\Users\<you>\.ssh\`
+- Common keys: `id_ed25519`, `id_rsa` (private) and `.pub` (public)
+- If you don't have keys yet, Windows 10/11 typically includes OpenSSH:
+
+```powershell
+ssh-keygen -t ed25519
+```
+
+**Troubleshooting**
+- If PowerShell says `go` is not recognized, your PATH hasn't refreshed—close and reopen the terminal (or sign out/in).
 
 ### Usage
 ```bash
